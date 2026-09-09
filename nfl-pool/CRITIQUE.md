@@ -316,3 +316,33 @@ movement: opened SEA −4.5, ML from −195 to −185); patriots.com and NBC inj
 Bowl LX box score); Opta Analyst Week 1 predictions (SEA 61%); Field Gulls (Seattle secondary
 depth); nflverse `nfldata/data/games.csv` (all computed statistics); nfelo market-regression
 analysis and FiveThirtyEight Elo comparison (models versus the line).
+
+## Addendum (same day): reproducibility scripts and one retraction
+
+`backtest_market.py` reproduces section 2 exactly. `pool_sim.py` reproduces section 3 and adds
+two policies I had not run when I wrote sections 3 and 13.
+
+Results, 6 members, 8,000 seasons per cell, others take the dog at rate DEV in games where the
+favorite is under 62%:
+
+| User policy | DEV 0.15 | DEV 0.30 | DEV 0.50 |
+|---|---|---|---|
+| always favorite | 0.224 | 0.383 | 0.564 |
+| random dog at rate DEV | 0.170 | 0.159 | 0.167 |
+| "skilled" dog, signal knows the winner 10% of the time | 0.335 | 0.387 | 0.535 |
+| "skilled" dog, 25% | 0.792 | 0.836 | 0.907 |
+| favorite until week 14, then dogs when trailing | 0.176 | 0.324 | 0.496 |
+
+**Retraction.** Section 13 asserted that trailing late in the season makes dog picks
+positive-value. The simple version of that policy (take close-game dogs from week 14 when the
+deficit exceeds 5% of games remaining) *lowers* P(first) in every cell. The mechanism: a dog
+pick gains a relative point with probability ~0.4 and loses one with ~0.6 against a leader on
+the favorite, and in a 6-person pool the leader also gives back ground on their own random
+deviations, so favorites usually close small gaps on their own. If a standings-aware policy
+exists that helps, it is narrower than this heuristic and has to be derived (dynamic program
+over deficit × games remaining), not asserted. Until someone does that, the operating rule is
+simpler than I first wrote: **pick the favorite in every game, all season.**
+
+**Caveat on the "skilled" rows.** The edge parameter is an oracle that reveals the actual
+winner in a fraction of close games. Even 10% is a much bigger edge than any public model has
+demonstrated over the closing line. Those rows show what would be required, not what exists.
