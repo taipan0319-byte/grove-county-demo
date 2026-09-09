@@ -25,15 +25,24 @@ Entries here survived review. Anything not listed is open. Format: ID, decision,
 - **D8. Engines A and B stay separate; logs are append-only.** 2026-09-09.
 - **D9. Preseason narratives, joint-practice reports, Opta and expert picks carry zero model weight.**
   2026-09-09.
+- **D10. Pool scoring confirmed: 1 point per correct winner, no confidence points, season-long.**
+  Source: Ryan via ChatGPT block 1. 2026-09-09.
+- **D11. Bias mapping:** Sheila → CHI, Nolan → CHI, Sue → GB, Kaleigh → GB at strength 0.4 (prior);
+  Casey and Molly neutral. Source: Ryan. 2026-09-09.
+- **D12. Historical individual picks are unavailable; 2025 weekly scores are.** Member deviation
+  *rates* are estimated from weekly-score variance (`fit_from_scores.py`); individual selections
+  are never inferred. 2026-09-09.
+- **D13. Weekly screen and confidence rule.** `engine_b.py --screen`; LOW confidence resolves to the
+  favorite. 2026-09-09.
 
 ## Unresolved (conservative production choice in force)
 
-- **U1. Tie rule.** In force: ties split evenly (equivalent to a tiebreaker lottery). Needs Ryan.
-- **U2. Family deviation rates and Bears/Packers mapping.** In force: uniform priors in
-  `family.json` (dog rate 15% in toss-ups, 7% in close games, 2% otherwise; Sue → GB, Nolan → CHI
-  at 40%). Needs historical picks or in-season data.
-- **U3. Pool format confirmation** (1 point per game, no confidence points, cumulative). In force:
-  assumed yes.
+- **U1. Tie rule.** In force: ties split evenly. Ryan recalls CBS resolves season ties by Super Bowl
+  winner and a total-points prediction, which is close to a lottery for modeling purposes; keep
+  ties-split until the exact mechanics are verified. Not modeling co-champions.
+- **U2. Family deviation rates.** In force: uniform priors (15% toss-ups, 7% close, 2% other) until
+  `weekly_scores.csv` for 2025 is supplied and fitted. Bias mapping is now settled (D11); the 0.4
+  strength is still a prior.
 - **U4. Level differences between ChatGPT's simulation grid and Claude's.** Same shape, different
   levels; cause not identified (probability distribution, tie handling, or where opponent
   deviations land). Does not change any decision. Closed unless it starts to matter.

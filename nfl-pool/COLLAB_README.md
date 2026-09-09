@@ -42,17 +42,26 @@ modeling, active-member counts, simulations and recommendations. It is not an al
 python3 nfl-pool/v01_picks.py --season 2026 --week N          # Engine A: market picks + log
 python3 nfl-pool/engine_b.py  --season 2026 --week N          # Engine B: recommendation + log
 python3 nfl-pool/engine_b.py  --season 2026 --week N --standings standings.json
+python3 nfl-pool/engine_b.py  --season 2026 --week N --screen # v1.0 weekly screen with confidence
 python3 nfl-pool/engine_b.py  --season 2026 --week N --fit    # refit family.json from pool_picks.csv
+python3 nfl-pool/fit_from_scores.py --scores nfl-pool/weekly_scores.csv --season 2025 --write
 ```
 
 Both accept `--games-file games.csv` to use a local copy of nflverse's game file. Engine B
 requires numpy.
 
-## Definition of v1.0
+## Definition of v1.0 and status
 
-1. Engine B configured for the actual seven-person pool (`family.json`), with priors replaced by
-   estimates from historical weekly results where those exist.
-2. Tie rule settled and implemented in the objective.
-3. A one-screen weekly recommendation: market probability, expected family selection,
-   recommended pick, estimated P(first) impact, confidence in the strategic recommendation.
+1. Engine B configured for the actual seven-person pool — **done** (`family.json`, biases per D11).
+   Priors replaced by estimates from 2025 weekly scores — **waiting on `weekly_scores.csv`**.
+2. Tie rule — **settled as ties-split approximation** (U1).
+3. One-screen weekly recommendation — **done** (`engine_b.py --screen`).
 Then play the season.
+
+## Weekly routine during the season
+
+1. Before the first deadline of the week: `engine_b.py --season 2026 --week N --screen`
+   (with `--standings standings.json` from week 2 on). Enter the picks on CBS.
+2. After kickoff: record everyone's picks in `pool_picks.csv` (`season, week, game_id, member,
+   pick, entered_at`) and the week's points in `weekly_scores.csv`. Update `standings.json`.
+3. Every few weeks: `engine_b.py --fit` (uses `pool_picks.csv`) to sharpen `family.json`.
