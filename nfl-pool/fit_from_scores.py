@@ -43,14 +43,15 @@ def week_lines(games, season):
         out[int(g["week"])].append((max(ph, 1 - ph), fav_won))
     return out
 
-def estimate_rate(diffs_by_week, lines):
-    """diffs_by_week: {week: D}. Solve r^2*B + r*A - M = 0 where M = mean D^2."""
-    weeks = sorted(diffs_by_week); A = B = M = 0.0
+def estimate_rate(diffs_by_week, lines, weights=None):
+    """diffs_by_week: {week: D}. Solve r^2*B + r*A - M = 0 where M = (weighted) mean D^2."""
+    weeks = sorted(diffs_by_week); A = B = M = W = 0.0
     for w in weeks:
+        wt = (weights or {}).get(w, 1.0)
         close = [(p, f) for p, f in lines[w] if p < 0.62]
         n = len(close); s = sum(1 - 2 * p for p, _ in close)
-        A += n; B += s * s; M += diffs_by_week[w] ** 2
-    A /= len(weeks); B /= len(weeks); M /= len(weeks)
+        A += wt * n; B += wt * s * s; M += wt * diffs_by_week[w] ** 2; W += wt
+    A /= W; B /= W; M /= W
     if B < 1e-9: return M / A if A else 0.0
     return max(0.0, (-A + math.sqrt(A * A + 4 * B * M)) / (2 * B))
 
@@ -59,6 +60,7 @@ def main():
     ap.add_argument("--scores", required=True); ap.add_argument("--season", type=int, help="restrict to one season")
     ap.add_argument("--games-file"); ap.add_argument("--family", default=os.path.join(HERE, "family.json"))
     ap.add_argument("--write", action="store_true")
+    ap.add_argument("--halflife", type=float, default=1.0, help="recency half-life in seasons (weight = 0.5^(age/halflife)); 0 = no weighting")
     a = ap.parse_args()
     games = list(csv.DictReader(open(a.games_file, newline=""))) if a.games_file else \
             list(csv.DictReader(io.StringIO(urllib.request.urlopen(URL).read().decode())))
@@ -80,12 +82,16 @@ def main():
     for s_ in seasons:
         print(f"season {s_}: chalk score by week = { {w: chalk[(s_, w)] for (ss, w) in sorted(chalk) if ss == s_} }")
     print(f"\n{'member':10} {'weeks':>5} {'meanD':>6} {'sdD':>5} {'r_raw':>6} {'r_shrunk':>8}  {'-> dog_rate (tossup/close/other)':>34}")
+    latest = max(seasons)
+    def wt(key): return 1.0 if a.halflife <= 0 else 0.5 ** ((latest - key[0]) / a.halflife)
+    print(f"recency: half-life {a.halflife} season(s); season weights " + str({s_: round(wt((s_, 1)), 2) for s_ in seasons}))
     for name in sorted(by_member):
         d = by_member[name]; n = len(d); vals = list(d.values())
         mean = sum(vals) / n; sd = math.sqrt(sum((v - mean) ** 2 for v in vals) / max(1, n - 1))
-        r_raw = estimate_rate(d, lines)
+        weights = {k: wt(k) for k in d}; n_eff = sum(weights.values())
+        r_raw = estimate_rate(d, lines, weights)
         prior = names.get(name, {}).get("dog_rate", {}).get("close", 0.07) / 0.8
-        r = (r_raw * n + prior * PRIOR_WEEKS) / (n + PRIOR_WEEKS)
+        r = (r_raw * n_eff + prior * PRIOR_WEEKS) / (n_eff + PRIOR_WEEKS)
         rates = {"tossup": round(min(0.9, 1.3 * r), 3), "close": round(min(0.9, 0.8 * r), 3), "other": round(0.15 * r, 3)}
         flag = "" if name in names else "  (not in family.json; ignored on --write)"
         print(f"{name:10} {n:5d} {mean:+6.2f} {sd:5.2f} {r_raw:6.3f} {r:8.3f}  {rates['tossup']:.3f}/{rates['close']:.3f}/{rates['other']:.3f}{flag}")

@@ -4,6 +4,57 @@ Newest block at the top.
 
 ---
 
+## 2026-09-09 — Block 4: final v1.0 fit on the 252-row file; Week 1 screen for review
+
+**Data.** Your file loaded as `weekly_scores.csv` with your schema (season, week, member, points,
+source_alias, note). Every cell agrees with my independent screenshot transcription where they overlap,
+and every member's regular-season total plus their playoff points equals the CBS YTD figure. The five
+flagged zero weeks are dropped by the fitter (rule: points under half the week's all-favorites score).
+
+**Fit.** `fit_from_scores.py` now supports recency weighting; used half-life one season (2024 at 0.5,
+2025 at 1.0) and six pseudo-weeks of shrinkage toward the prior. Rates in D14. Two-season, full-season
+comparison: all-favorites 195 in 2024 (beats everyone) and 177 in 2025 (Casey 182, Kaleigh 177, rest
+below). Over both seasons chalk totals 372 against Casey 375, Sue 363, Sheila 353, Nolan 349, Kaleigh
+346, Ryan 336, Molly 292.
+
+**Final Week 1 screen (logged to `engine_b_log.csv`).**
+P(first) if all favorites this week: 0.575   with recommended picks: 0.580
+
+```
+game       market fav  P(fav) family on fav dP(first) if dog  pick   confidence
+NE@SEA            SEA   0.600          0.65          -0.0110  SEA    HIGH
+SF@LA              LA   0.637          0.94          -0.0185  LA     HIGH
+CHI@CAR           CHI   0.593          0.69          -0.0118  CHI    HIGH
+TB@CIN            CIN   0.637          0.94          -0.0194  CIN    HIGH
+NO@DET            DET   0.726          0.94          -0.0293  DET    HIGH
+BUF@HOU           BUF   0.517          0.49          -0.0048  BUF    HIGH
+BAL@IND           BAL   0.609          0.65          -0.0156  BAL    HIGH
+CLE@JAX           JAX   0.791          0.94          -0.0384  JAX    HIGH
+ATL@PIT           PIT   0.622          0.94          -0.0151  PIT    HIGH
+NYJ@TEN           TEN   0.526          0.49          -0.0026  TEN    HIGH
+ARI@LAC           LAC   0.800          0.94          -0.0382  LAC    HIGH
+MIA@LV             LV   0.600          0.65          -0.0126  LV     HIGH
+GB@MIN            MIN   0.522          0.41          -0.0032  MIN    MEDIUM
+WAS@PHI           PHI   0.657          0.94          -0.0215  PHI    HIGH
+DAL@NYG           DAL   0.593          0.65          -0.0134  DAL    HIGH
+DEN@KC             KC   0.583          0.65          -0.0099  KC     HIGH
+```
+
+All sixteen games resolve to the market favorite. The three near-coin-flips are negative for the dog
+in every family scenario; the family already splits those games, so there is nothing to differentiate
+from. D6 (favorite in every game) and D16 (pick every playoff game) are the production rules.
+
+**Items for your one review round.** (1) Recency half-life of one season is a judgment call; with
+half-life 0 (equal weights) the rates move by ±0.05 and no Week 1 pick changes. (2) The fitter's zero
+rule drops a week when points are under 50% of the chalk score; a genuinely awful week could be
+dropped, but none of the seven members had one in two seasons. (3) Ryan's own rate fell from 0.81
+(2024) to 0.43 (2025); the model does not use Ryan's rate, so this is informational.
+
+**v1.0 is complete.** Weekly routine is in `COLLAB_README.md`. Nothing further is planned before games
+are played.
+
+---
+
 ## 2026-09-09 — Block 3: second season added, mapping confirmed, playoff finding
 
 **Data added.** 2024 weeks 1–4 (verified against the YTD totals inferred earlier) and 2025 weeks

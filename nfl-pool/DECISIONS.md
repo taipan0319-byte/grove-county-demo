@@ -37,16 +37,17 @@ Entries here survived review. Anything not listed is open. Format: ID, decision,
   Weeks 5–18 itemized; weeks 1–4 only as a combined total; playoff weeks excluded. Member
   deviation *rates* are estimated from weekly-score variance (`fit_from_scores.py`); individual
   selections are never inferred. 2026-09-09.
-- **D14 (amended). The family is not Vegas-heavy.** Data: 2024 weeks 1–18 and 2025 weeks 9–18
-  (`weekly_scores.csv`). In 2024, all-favorites scored 158 over weeks 5–18 versus Casey 156, Sue 156,
-  Sheila 148, Nolan 142, Ryan 136, Kaleigh 135, Molly 117. In 2025 weeks 9–18 the family matched or
-  beat all-favorites (92): Casey +9, Kaleigh +3, Molly +3, Sue +1, others 0. Cause: favorites under
-  62% won only 23 of 53 close games in that stretch (43%), against 64% in 2024; underdog picks paid
-  by luck, not skill. Pooled close-game underdog rates (28 weeks each, shrunk): Sue 0.20, Casey 0.27,
-  Sheila 0.32, Kaleigh 0.45, Nolan 0.51, Molly 0.77; Ryan 0.59 (0.81 in 2024, 0.43 in 2025). The
-  estimator uses score variance, not the mean, so a lucky dog year does not inflate it. Caveats:
-  nflverse line timing for 2025 is unverified; unpicked games are indistinguishable from dog picks.
-  2026-09-09.
+- **D14 (final). The family is not Vegas-heavy; all-favorites would have finished 1st in 2024 and
+  2nd in 2025.** Data: ChatGPT's 252-row file, 2024 and 2025 weeks 1–18, seven members, reconciled
+  cell-for-cell with Claude's screenshot transcription and with CBS season totals once playoff points
+  are added. Regular-season totals versus all-favorites:
+  2024 (chalk 195): Casey 193, Sue 192, Sheila 182, Nolan 175, Ryan 170, Kaleigh 169, Molly 152.
+  2025 (chalk 177): Casey 182, Kaleigh 177, Nolan 174, Sheila 171, Sue 171, Ryan 166, Molly 140.
+  Casey's 2025 edge came in weeks 9–18, when favorites under 62% won 23 of 53 close games (43%).
+  Fitted close-game underdog rates, recency half-life one season (2024 weighted 0.5), shrunk with six
+  pseudo-weeks, flagged zero weeks dropped: Sue 0.23, Sheila 0.30, Casey 0.35, Nolan 0.39, Kaleigh 0.41,
+  Molly 0.92; Ryan 0.52. Caveats: nflverse line timing unverified; unpicked games look like dog picks;
+  the estimator identifies the level of deviation, not its distribution across bands. 2026-09-09.
 - **D15 (confirmed). Screen-name mapping.** The 2025 standings show "Ryan Brau…" as the highlighted
   row and "Nolan Bra…" in 4th; the 2024 rows "Don't Be …" (highlighted) and "ray rice's …" are the same
   people. 2026-09-09.
