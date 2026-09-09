@@ -37,15 +37,23 @@ Entries here survived review. Anything not listed is open. Format: ID, decision,
   Weeks 5–18 itemized; weeks 1–4 only as a combined total; playoff weeks excluded. Member
   deviation *rates* are estimated from weekly-score variance (`fit_from_scores.py`); individual
   selections are never inferred. 2026-09-09.
-- **D14. The family is not Vegas-heavy; chalk would have won 2024.** All-favorites scored 158 over
-  weeks 5–18. Casey 156, Sue 156, Sheila 148, Nolan 142, Ryan 136, Kaleigh 135, Molly 117. The two
-  members closest to chalk finished 1st and 2nd. Ryan gave up 22 points to chalk in 14 weeks.
-  Fitted close-game underdog rates (shrunk): Sue 0.18, Casey 0.22, Sheila 0.31, Kaleigh 0.45,
-  Nolan 0.56, Molly 0.74; Ryan's own 2024 rate 0.71. Rates above ~0.6 mean deviation extends
-  beyond close games and may include unpicked games; the effect on Engine B is the same. 2026-09-09.
-- **D15. Screen-name mapping (INFERRED, awaiting Ryan's confirmation):** "Don't Be …" is the
-  highlighted (logged-in) row → Ryan; "ray rice's …" → Nolan by elimination. Casey, Sue, Sheila,
-  Kaleigh, Molly by name. 2026-09-09.
+- **D14 (amended). The family is not Vegas-heavy.** Data: 2024 weeks 1–18 and 2025 weeks 9–18
+  (`weekly_scores.csv`). In 2024, all-favorites scored 158 over weeks 5–18 versus Casey 156, Sue 156,
+  Sheila 148, Nolan 142, Ryan 136, Kaleigh 135, Molly 117. In 2025 weeks 9–18 the family matched or
+  beat all-favorites (92): Casey +9, Kaleigh +3, Molly +3, Sue +1, others 0. Cause: favorites under
+  62% won only 23 of 53 close games in that stretch (43%), against 64% in 2024; underdog picks paid
+  by luck, not skill. Pooled close-game underdog rates (28 weeks each, shrunk): Sue 0.20, Casey 0.27,
+  Sheila 0.32, Kaleigh 0.45, Nolan 0.51, Molly 0.77; Ryan 0.59 (0.81 in 2024, 0.43 in 2025). The
+  estimator uses score variance, not the mean, so a lucky dog year does not inflate it. Caveats:
+  nflverse line timing for 2025 is unverified; unpicked games are indistinguishable from dog picks.
+  2026-09-09.
+- **D15 (confirmed). Screen-name mapping.** The 2025 standings show "Ryan Brau…" as the highlighted
+  row and "Nolan Bra…" in 4th; the 2024 rows "Don't Be …" (highlighted) and "ray rice's …" are the same
+  people. 2026-09-09.
+- **D16. Pick every playoff game.** CBS season totals include weeks 19–22. Casey scored 10 playoff
+  points in both 2024 and 2025; Ryan scored 4 and 1; Kaleigh and Nolan 0 in 2025. Picking the
+  favorite in all 13 playoff games is worth roughly 8–9 expected points and costs nothing. Engine B
+  does not yet simulate playoff weeks; the decision does not depend on it. 2026-09-09.
 - **D13. Weekly screen and confidence rule.** `engine_b.py --screen`; LOW confidence resolves to the
   favorite. 2026-09-09.
 

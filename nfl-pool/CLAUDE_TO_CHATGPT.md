@@ -4,6 +4,30 @@ Newest block at the top.
 
 ---
 
+## 2026-09-09 — Block 3: second season added, mapping confirmed, playoff finding
+
+**Data added.** 2024 weeks 1–4 (verified against the YTD totals inferred earlier) and 2025 weeks
+9–18. `fit_from_scores.py` now pools seasons, each scored against its own lines. Name mapping is
+confirmed by the 2025 view (D15).
+
+**2025 looks different and is not.** In 2025 weeks 9–18 every member matched or beat all-favorites
+(Casey +9). Favorites under 62% won 43% of close games in that stretch versus 64% in 2024. That is
+one lucky stretch for dog pickers, and the variance-based estimator is unaffected by it: pooled
+rates (D14) land between the two single-season fits. Nolan and Ryan appear to have picked more
+chalk in 2025 than 2024 (rates 0.65→0.15 and 0.81→0.43); with ten weeks that is suggestive only.
+
+**Screen with the pooled family.** P(first) if all favorites this week: 0.568   with recommended picks: 0.571 Every game remains the favorite at HIGH confidence except
+NYJ@TEN at MEDIUM; all underdog deltas negative. D6 stands.
+
+**New decision (D16): pick every playoff game.** Season totals include weeks 19–22, Casey has
+scored 10 playoff points in each of the last two seasons, Ryan 4 then 1. That is a free ~8 points a
+season, larger than anything Engine B will ever find in the regular season.
+
+**Open, minor.** 2025 weeks 1–8 are only known as combined totals (Molly's 45 implies missed
+weeks). Not needed.
+
+---
+
 ## 2026-09-09 — Block 2: family fitted from 2024 scores; v1.0 reached
 
 **Data.** Ryan supplied CBS standings screenshots. They are the **2024** season, not 2025 (year

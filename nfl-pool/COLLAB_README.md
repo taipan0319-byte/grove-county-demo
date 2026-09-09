@@ -56,7 +56,7 @@ requires numpy.
    deviation rates fitted from 2024 weekly scores per D14).
 2. Tie rule — **settled as ties-split approximation** (U1).
 3. One-screen weekly recommendation — **done** (`engine_b.py --screen`).
-**v1.0 reached 2026-09-09.** Production rule: the favorite in every game (D6). Play the season.
+**v1.0 reached 2026-09-09.** Production rule: the favorite in every game, playoffs included (D6, D16). Play the season.
 
 ## Weekly routine during the season
 

@@ -3,8 +3,9 @@
 games anyone picked; it uses only how far each member's weekly score wandered from the all-favorites
 score, which is a function of how often they deviated.
 
-    python3 fit_from_scores.py --scores weekly_scores.csv --season 2025 [--games-file games.csv]
+    python3 fit_from_scores.py --scores weekly_scores.csv [--games-file games.csv]
                                [--family family.json] [--write]
+All seasons present in the scores file are pooled (each season's weeks scored against that season's lines).
 
 weekly_scores.csv columns:  season, week, member, points        (points = correct picks that week)
 Optional column:            games_picked   (if a member skipped games; weeks with points < 50% of the
@@ -55,25 +56,29 @@ def estimate_rate(diffs_by_week, lines):
 
 def main():
     ap = argparse.ArgumentParser()
-    ap.add_argument("--scores", required=True); ap.add_argument("--season", type=int, required=True)
+    ap.add_argument("--scores", required=True); ap.add_argument("--season", type=int, help="restrict to one season")
     ap.add_argument("--games-file"); ap.add_argument("--family", default=os.path.join(HERE, "family.json"))
     ap.add_argument("--write", action="store_true")
     a = ap.parse_args()
     games = list(csv.DictReader(open(a.games_file, newline=""))) if a.games_file else \
             list(csv.DictReader(io.StringIO(urllib.request.urlopen(URL).read().decode())))
-    lines = week_lines(games, a.season)
-    chalk = {w: sum(f for _, f in v) for w, v in lines.items()}
-    rows = [r for r in csv.DictReader(open(a.scores, newline="")) if int(r["season"]) == a.season]
+    rows = [r for r in csv.DictReader(open(a.scores, newline="")) if a.season is None or int(r["season"]) == a.season]
+    seasons = sorted({int(r["season"]) for r in rows})
+    lines = {}; chalk = {}
+    for s_ in seasons:
+        for w, v in week_lines(games, s_).items():
+            lines[(s_, w)] = v; chalk[(s_, w)] = sum(f for _, f in v)
     family = json.load(open(a.family)) if os.path.exists(a.family) else []
     names = {m["name"]: m for m in family}
     by_member = defaultdict(dict); dropped = []
     for r in rows:
-        w = int(r["week"]); pts = float(r["points"])
+        w = (int(r["season"]), int(r["week"])); pts = float(r["points"])
         if w not in chalk: continue
         if pts < 0.5 * chalk[w]: dropped.append((r["member"], w)); continue
         by_member[r["member"]][w] = pts - chalk[w]
     if dropped: print("dropped as probable missed weeks:", dropped)
-    print(f"season {a.season}: chalk score by week = { {w: chalk[w] for w in sorted(chalk)} }")
+    for s_ in seasons:
+        print(f"season {s_}: chalk score by week = { {w: chalk[(s_, w)] for (ss, w) in sorted(chalk) if ss == s_} }")
     print(f"\n{'member':10} {'weeks':>5} {'meanD':>6} {'sdD':>5} {'r_raw':>6} {'r_shrunk':>8}  {'-> dog_rate (tossup/close/other)':>34}")
     for name in sorted(by_member):
         d = by_member[name]; n = len(d); vals = list(d.values())
