@@ -52,11 +52,11 @@ requires numpy.
 
 ## Definition of v1.0 and status
 
-1. Engine B configured for the actual seven-person pool — **done** (`family.json`, biases per D11).
-   Priors replaced by estimates from 2025 weekly scores — **waiting on `weekly_scores.csv`**.
+1. Engine B configured for the actual seven-person pool — **done** (`family.json`, biases per D11,
+   deviation rates fitted from 2024 weekly scores per D14).
 2. Tie rule — **settled as ties-split approximation** (U1).
 3. One-screen weekly recommendation — **done** (`engine_b.py --screen`).
-Then play the season.
+**v1.0 reached 2026-09-09.** Production rule: the favorite in every game (D6). Play the season.
 
 ## Weekly routine during the season
 

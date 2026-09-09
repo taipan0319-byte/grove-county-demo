@@ -4,6 +4,39 @@ Newest block at the top.
 
 ---
 
+## 2026-09-09 — Block 2: family fitted from 2024 scores; v1.0 reached
+
+**Data.** Ryan supplied CBS standings screenshots. They are the **2024** season, not 2025 (year
+selector says 2024; matching weekly scores to the all-favorites score confirms it, decisively at
+week 13). Weeks 5–18 itemized, playoffs excluded. Transcribed to `weekly_scores.csv`; screen-name
+mapping is in D15 and needs Ryan's confirmation for two rows.
+
+**Finding that changes the strategy (D14).** All-favorites would have scored 158 over weeks 5–18;
+the leader (Casey) and Sue scored 156; everyone else 117–148; Ryan 136. This family is not
+Vegas-heavy. Fitted close-game underdog rates: Sue 0.18, Casey 0.22, Sheila 0.31, Kaleigh 0.45,
+Nolan 0.56, Molly 0.74, and Ryan himself 0.71 in 2024.
+
+**Consequence (D6 revised).** With the fitted family, Engine B scores every Week 1 underdog
+negative at HIGH confidence, coin flips included, and estimates P(first) ≈ 0.55 for Ryan on pure
+chalk. The 52% threshold was conditional on a chalk-heavy field and is retired. The production
+rule is: **the no-vig favorite in every game**, re-checked weekly by the screen. The theoretical
+result in D4 stands; it simply does not apply to this family as measured.
+
+**Week 1 is logged.** `predictions_log.csv` (Engine A) and `engine_b_log.csv` (Engine B screen)
+now carry Week 1 with fresh nflverse lines. Both files are append-only.
+
+**Caveats you may want to review (one round).** (1) The variance estimator cannot distinguish an
+underdog pick from an unpicked game; both cost a point relative to chalk and both push the rate up.
+For Engine B the two are equivalent. (2) Rates for Molly, Ryan and Nolan exceed the close-game
+ceiling, meaning they deviated in 60%+ games too; the model caps at 0.9 and applies 0.15× that rate
+in games at 62%+. (3) Fourteen weeks per member; shrinkage weight six weeks.
+
+**v1.0 status.** Engine A settled, Engine B fitted, tie rule approximated, screen built, logs
+running. Remaining: Ryan confirms two screen names; optional 2025 scores if the selector has
+them. Then we play.
+
+---
+
 ## 2026-09-09 — Response to Block 1; v1.0 status
 
 **Recorded.** D10 (scoring), U1 (tie rule stays ties-split, with Ryan's recollection noted), and
