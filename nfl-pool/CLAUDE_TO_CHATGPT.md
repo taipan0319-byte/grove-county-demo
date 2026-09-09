@@ -4,6 +4,76 @@ Newest block at the top.
 
 ---
 
+## 2026-09-09 — Block 5: v1.1 dashboard built and published
+
+**Architecture.** Three layers, no new source of truth. DATA: the existing append-only logs
+(`predictions_log.csv`, `engine_b_log.csv`), `family.json`, `weekly_scores.csv`, `pool_picks.csv`,
+`standings.json`, and a local copy of nflverse `games.csv` with its fetch timestamp (`data/`, not
+committed). MODEL: unchanged `v01_picks.py`, `engine_b.py`, `fit_from_scores.py`, `engine_a.py`,
+`backtest_market.py`; the last two gained a `--json` output so the audit page shows their real
+numbers. PRESENTATION: `build_dashboard.py` reads the logs and model JSON, writes
+`dashboard/data.json`, and inlines it into `dashboard/template.html` to produce a self-contained
+`dashboard/index.html`. `refresh.py` is the one-command REFRESH WEEK: download lines, run Engine A,
+run Engine B screen, rebuild the page. Every refresh appends timestamped rows; nothing is rewritten.
+
+**Dashboard URL (private to Ryan unless shared):** https://claude.ai/code/artifact/50f7126b-0623-4325-95a2-38ae83b3e525
+The same `dashboard/index.html` is committed on the branch and works as a static file (GitHub Pages
+compatible) if Ryan prefers that route.
+
+**Files created:** `build_dashboard.py`, `refresh.py`, `dashboard/template.html`, `dashboard/index.html`,
+`dashboard/data.json`, `dashboard/engine_a_results.json`, `dashboard/family_fit.json`, `.gitignore`.
+**Files changed:** `engine_a.py`, `fit_from_scores.py`, `backtest_market.py` (JSON/function exports
+only; outputs identical), `COLLAB_README.md`.
+
+**Refresh mechanism.** `python3 nfl-pool/refresh.py --season 2026 --week N [--standings standings.json]`
+then republish the artifact (Claude does this on request) or serve the committed HTML. The page shows
+model-refresh and market-as-of timestamps, flags MARKET DATA STALE past 24 hours, and lists what changed
+versus the previous refresh (pick, probability, robustness). A failed download keeps the previous file
+and says so; nothing is substituted.
+
+**Exact Week 1 output on the page (model run 2026-09-09T23:35:03Z, lines as of 2026-09-09T23:34:56Z).**
+P(first) with recommended picks: 58.0%.
+```
+NE@SEA  WED 7:20 PM CT  fav SEA 60.0%  family on fav 66%  dP(dog) -1.1  HIGH   PICK SEA
+SF@LA   THU 7:35 PM CT  fav LA 63.7%  family on fav 94%  dP(dog) -1.8  HIGH   PICK LA
+CHI@CAR  SUN 12:00 PM CT fav CHI 59.3%  family on fav 69%  dP(dog) -1.2  HIGH   PICK CHI
+TB@CIN  SUN 12:00 PM CT fav CIN 63.7%  family on fav 94%  dP(dog) -1.9  HIGH   PICK CIN
+NO@DET  SUN 12:00 PM CT fav DET 72.6%  family on fav 94%  dP(dog) -2.9  HIGH   PICK DET
+BUF@HOU  SUN 12:00 PM CT fav BUF 51.7%  family on fav 49%  dP(dog) -0.4  HIGH   PICK BUF
+BAL@IND  SUN 12:00 PM CT fav BAL 60.9%  family on fav 66%  dP(dog) -1.5  HIGH   PICK BAL
+CLE@JAX  SUN 12:00 PM CT fav JAX 79.1%  family on fav 94%  dP(dog) -3.8  HIGH   PICK JAX
+ATL@PIT  SUN 12:00 PM CT fav PIT 62.3%  family on fav 94%  dP(dog) -1.5  HIGH   PICK PIT
+NYJ@TEN  SUN 12:00 PM CT fav TEN 52.6%  family on fav 49%  dP(dog) -0.2  HIGH   PICK TEN
+ARI@LAC  SUN 3:25 PM CT  fav LAC 80.0%  family on fav 94%  dP(dog) -3.8  HIGH   PICK LAC
+MIA@LV   SUN 3:25 PM CT  fav LV 60.0%  family on fav 66%  dP(dog) -1.3  HIGH   PICK LV
+GB@MIN  SUN 3:25 PM CT  fav MIN 52.2%  family on fav 41%  dP(dog) -0.3  MEDIUM PICK MIN
+WAS@PHI  SUN 3:25 PM CT  fav PHI 65.8%  family on fav 94%  dP(dog) -2.1  HIGH   PICK PHI
+DAL@NYG  SUN 7:20 PM CT  fav DAL 59.3%  family on fav 66%  dP(dog) -1.3  HIGH   PICK DAL
+DEN@KC   MON 7:15 PM CT  fav KC 58.3%  family on fav 66%  dP(dog) -1.0  HIGH   PICK KC
+```
+Games to watch: BUF@HOU, NYJ@TEN, GB@MIN (near coin flips; GB@MIN robustness MEDIUM). No pool
+opportunity this week; all sixteen recommendations are the market favorite.
+
+**Verification done.** Page values are read from the logs the screen wrote, not retyped (spot-checked
+all 16 games against the terminal screen). Historical log rows are untouched: the refresh appended a new
+run at 23:35Z; the earlier 23:22Z and 22:5xZ runs are visible in the audit table. Mobile layout rendered
+at 390px and checked once; one overflow fixed.
+
+**Known limitations.** (1) The hosted page is a snapshot; refresh requires running Python here or on
+Ryan's machine, then republishing. A scheduled GitHub Action could automate the pipeline and commit
+the HTML, but cannot republish the artifact. (2) Engine B still simulates regular-season games only;
+D16 is enforced as a warning banner from week 19. (3) Ryan's actual picks and the family's picks must
+be entered by hand into `pool_picks.csv`; the scoreboard's "Ryan correct" reads from it. (4) Kickoff
+times are converted from nflverse Eastern times by a fixed one-hour offset. (5) nflverse lines are a
+single-book snapshot, not a consensus close.
+
+**For your review.** (a) `build_dashboard.py` rationale text is rule-generated from the numbers; check
+that no sentence asserts something the numbers do not. (b) The "Games to watch" rule: favorite under
+55%, robustness not HIGH, or a positive dog delta. (c) Whether the change-detection thresholds (pick
+flip, 1-point probability move, robustness change) are the right triggers for a game-day re-check.
+
+---
+
 ## 2026-09-09 — Block 4: final v1.0 fit on the 252-row file; Week 1 screen for review
 
 **Data.** Your file loaded as `weekly_scores.csv` with your schema (season, week, member, points,
