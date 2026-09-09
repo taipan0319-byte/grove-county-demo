@@ -36,7 +36,7 @@ DEFAULT_FAMILY = [
    "close": 0.07,
    "other": 0.02
   },
-  "bias_team": null,
+  "bias_team": None,
   "bias_strength": 0.0
  },
  {
@@ -66,7 +66,7 @@ DEFAULT_FAMILY = [
    "close": 0.07,
    "other": 0.02
   },
-  "bias_team": null,
+  "bias_team": None,
   "bias_strength": 0.0
  },
  {
@@ -76,7 +76,7 @@ DEFAULT_FAMILY = [
    "close": 0.07,
    "other": 0.02
   },
-  "bias_team": null,
+  "bias_team": None,
   "bias_strength": 0.0
  },
  {
@@ -86,7 +86,7 @@ DEFAULT_FAMILY = [
    "close": 0.07,
    "other": 0.02
   },
-  "bias_team": null,
+  "bias_team": None,
   "bias_strength": 0.0
  }
 ]
