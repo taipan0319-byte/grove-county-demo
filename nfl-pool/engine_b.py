@@ -29,13 +29,69 @@ import numpy as np
 URL = "https://raw.githubusercontent.com/nflverse/nfldata/master/data/games.csv"
 HERE = os.path.dirname(os.path.abspath(__file__))
 DEFAULT_FAMILY = [
-    {"name": "Sue", "dog_rate": {"tossup": 0.30, "close": 0.15, "other": 0.03}, "bias_team": "GB", "bias_strength": 0.5},
-    {"name": "Nolan", "dog_rate": {"tossup": 0.40, "close": 0.25, "other": 0.08}, "bias_team": "CHI", "bias_strength": 0.5},
-    {"name": "Mom", "dog_rate": {"tossup": 0.25, "close": 0.10, "other": 0.03}, "bias_team": "CHI", "bias_strength": 0.6},
-    {"name": "Daughter", "dog_rate": {"tossup": 0.30, "close": 0.15, "other": 0.05}, "bias_team": "GB", "bias_strength": 0.6},
-    {"name": "Other", "dog_rate": {"tossup": 0.25, "close": 0.10, "other": 0.03}, "bias_team": None, "bias_strength": 0.0},
+ {
+  "name": "Casey",
+  "dog_rate": {
+   "tossup": 0.15,
+   "close": 0.07,
+   "other": 0.02
+  },
+  "bias_team": null,
+  "bias_strength": 0.0
+ },
+ {
+  "name": "Sue",
+  "dog_rate": {
+   "tossup": 0.15,
+   "close": 0.07,
+   "other": 0.02
+  },
+  "bias_team": "GB",
+  "bias_strength": 0.4
+ },
+ {
+  "name": "Nolan",
+  "dog_rate": {
+   "tossup": 0.15,
+   "close": 0.07,
+   "other": 0.02
+  },
+  "bias_team": "CHI",
+  "bias_strength": 0.4
+ },
+ {
+  "name": "Sheila",
+  "dog_rate": {
+   "tossup": 0.15,
+   "close": 0.07,
+   "other": 0.02
+  },
+  "bias_team": null,
+  "bias_strength": 0.0
+ },
+ {
+  "name": "Kaleigh",
+  "dog_rate": {
+   "tossup": 0.15,
+   "close": 0.07,
+   "other": 0.02
+  },
+  "bias_team": null,
+  "bias_strength": 0.0
+ },
+ {
+  "name": "Molly",
+  "dog_rate": {
+   "tossup": 0.15,
+   "close": 0.07,
+   "other": 0.02
+  },
+  "bias_team": null,
+  "bias_strength": 0.0
+ }
 ]
 USER_DOG_THRESHOLD = 0.52   # default future-week policy for the user
+# Roster note: R C B is a historical entry (Ryan's late father). Never include it as an opponent.
 
 def american_to_prob(ml):
     ml = float(ml); return 100 / (ml + 100) if ml > 0 else -ml / (-ml + 100)
