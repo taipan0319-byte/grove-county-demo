@@ -59,7 +59,7 @@ def main():
     ap = argparse.ArgumentParser()
     ap.add_argument("--scores", required=True); ap.add_argument("--season", type=int, help="restrict to one season")
     ap.add_argument("--games-file"); ap.add_argument("--family", default=os.path.join(HERE, "family.json"))
-    ap.add_argument("--write", action="store_true")
+    ap.add_argument("--write", action="store_true"); ap.add_argument("--json", help="write fit summary to this JSON file")
     ap.add_argument("--halflife", type=float, default=1.0, help="recency half-life in seasons (weight = 0.5^(age/halflife)); 0 = no weighting")
     a = ap.parse_args()
     games = list(csv.DictReader(open(a.games_file, newline=""))) if a.games_file else \
@@ -85,6 +85,9 @@ def main():
     latest = max(seasons)
     def wt(key): return 1.0 if a.halflife <= 0 else 0.5 ** ((latest - key[0]) / a.halflife)
     print(f"recency: half-life {a.halflife} season(s); season weights " + str({s_: round(wt((s_, 1)), 2) for s_ in seasons}))
+    summary = dict(seasons=seasons, halflife=a.halflife, prior_weeks=PRIOR_WEEKS, dropped=[list(x[1]) + [x[0]] for x in dropped],
+                   chalk={f"{k[0]}": {} for k in chalk}, members=[])
+    for (s_, w), v in chalk.items(): summary["chalk"][str(s_)][str(w)] = v
     for name in sorted(by_member):
         d = by_member[name]; n = len(d); vals = list(d.values())
         mean = sum(vals) / n; sd = math.sqrt(sum((v - mean) ** 2 for v in vals) / max(1, n - 1))
@@ -95,9 +98,12 @@ def main():
         rates = {"tossup": round(min(0.9, 1.3 * r), 3), "close": round(min(0.9, 0.8 * r), 3), "other": round(0.15 * r, 3)}
         flag = "" if name in names else "  (not in family.json; ignored on --write)"
         print(f"{name:10} {n:5d} {mean:+6.2f} {sd:5.2f} {r_raw:6.3f} {r:8.3f}  {rates['tossup']:.3f}/{rates['close']:.3f}/{rates['other']:.3f}{flag}")
+        summary["members"].append(dict(name=name, weeks=n, mean_diff=mean, sd_diff=sd, r_raw=r_raw, r_shrunk=r, dog_rate=rates, in_family=name in names))
         if a.write and name in names: names[name]["dog_rate"] = rates
     if a.write:
         json.dump(family, open(a.family, "w"), indent=1); print(f"\nwrote {a.family}")
+    if a.json:
+        json.dump(summary, open(a.json, "w"), indent=1); print(f"wrote {a.json}")
 
 if __name__ == "__main__":
     main()

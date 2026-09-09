@@ -76,7 +76,8 @@ def fit(X, y, l2=1e-4):
 def main():
     ap = argparse.ArgumentParser()
     ap.add_argument("--games-file"); ap.add_argument("--first-test", type=int, default=2014)
-    a = ap.parse_args()
+    ap.add_argument("--json", help="write results to this JSON file")
+    a = ap.parse_args(); results = dict(rows=None, tests=None, raw=None, models=[])
     rows = list(csv.DictReader(open(a.games_file, newline=""))) if a.games_file else \
            list(csv.DictReader(io.StringIO(urllib.request.urlopen(URL).read().decode())))
     data = build(rows)
@@ -85,11 +86,13 @@ def main():
               ("M5 +qbchg", ["mkt", "elo", "rest", "div", "cold", "windy", "qbchg"])]
     seasons = sorted({d["season"] for d in data}); tests = [s for s in seasons if s >= a.first_test]
     print(f"rows {len(data)}, seasons {seasons[0]}-{seasons[-1]}, test seasons {tests[0]}-{tests[-1]}\n")
+    results["rows"] = len(data); results["tests"] = [tests[0], tests[-1]]
     # raw market (no fitted intercept/slope) as the true production baseline
     raw_ll = {s: np.mean([-math.log(d["p_mkt"] if d["y"] else 1 - d["p_mkt"]) for d in data if d["season"] == s]) for s in tests}
     raw_acc = {s: np.mean([(d["p_mkt"] >= 0.5) == d["y"] for d in data if d["season"] == s]) for s in tests}
     print("RAW no-vig market (production baseline): pooled logloss %.4f  accuracy %.4f" %
           (np.mean(list(raw_ll.values())), np.mean(list(raw_acc.values()))))
+    results["raw"] = dict(logloss=float(np.mean(list(raw_ll.values()))), accuracy=float(np.mean(list(raw_acc.values()))))
     prev = None; coefs = defaultdict(list)
     print(f"\n{'model':12} {'logloss':>8} {'brier':>7} {'acc':>6} {'flip_n':>6} {'flip_acc':>8} {'better than prev (seasons)':>26}")
     for name, cols in blocks:
@@ -106,6 +109,9 @@ def main():
             flips += f.sum(); flip_ok += ((p >= 0.5) == yte)[f].sum()
             if prev is not None and l < prev[t]: wins += 1
         cur = dict(zip(tests, ll))
+        results["models"].append(dict(name=name, features=cols, logloss=float(np.mean(ll)), brier=float(np.mean(br)),
+                                      accuracy=float(np.mean(acc)), flips=int(flips), flip_acc=(float(flip_ok / flips) if flips else None),
+                                      better_than_prev=(f"{wins}/{len(tests)}" if prev is not None else None)))
         print(f"{name:12} {np.mean(ll):8.4f} {np.mean(br):7.4f} {np.mean(acc):6.4f} {flips:6d} "
               f"{(flip_ok / flips if flips else float('nan')):8.3f} {('%d/%d' % (wins, len(tests))) if prev is not None else '-':>26}")
         prev = cur
@@ -114,6 +120,10 @@ def main():
         W = np.array(coefs[name]); last = W[-1]
         cons = [(np.sign(W[:, i + 1]) == np.sign(last[i + 1])).mean() for i in range(len(cols))]
         print(f"  {name:12} " + "  ".join(f"{c}={last[i+1]:+.3f} ({cons[i]:.0%} same sign)" for i, c in enumerate(cols)))
+        for m in results["models"]:
+            if m["name"] == name: m["coefficients"] = {c: dict(value=float(last[i+1]), sign_consistency=float(cons[i])) for i, c in enumerate(cols)}
+    if a.json:
+        import json; json.dump(results, open(a.json, "w"), indent=1); print(f"\nwrote {a.json}")
 
 if __name__ == "__main__":
     main()
