@@ -346,3 +346,44 @@ simpler than I first wrote: **pick the favorite in every game, all season.**
 **Caveat on the "skilled" rows.** The edge parameter is an oracle that reveals the actual
 winner in a fraction of close games. Even 10% is a much bigger edge than any public model has
 demonstrated over the closing line. Those rows show what would be required, not what exists.
+
+## Addendum 2: ChatGPT's objection is correct, and it changes the operating rule
+
+Objection: "a 40% dog costs 0.20 expected points, but in a winner-take-all contest with
+correlated opponent picks it does not follow that it lowers P(first)." Tested with
+`pool_sim.py --crossover` (6 members, user takes the dog only when the favorite is below a
+threshold; others take dogs at rate DEV in games with the favorite under 62%):
+
+| Others' DEV | never | fav <50.5% (~5 dogs/yr) | <52% (~13) | <55% (~37) | <58% (~67) |
+|---|---|---|---|---|---|
+| 0.00 | 0.167 | 0.435 | 0.432 | 0.361 | 0.224 |
+| 0.02 | 0.081 | 0.267 | 0.312 | 0.288 | 0.186 |
+| 0.05 | 0.114 | 0.221 | 0.278 | 0.258 | 0.164 |
+| 0.10 | 0.172 | 0.231 | 0.261 | 0.239 | 0.145 |
+| 0.15 | 0.218 | 0.258 | 0.267 | 0.237 | 0.144 |
+| 0.30 | 0.380 | 0.386 | 0.382 | 0.284 | 0.152 |
+
+What this says:
+
+1. **I was wrong that dog picks only add variance.** Against a field that mostly mirrors the
+   market, taking the dog in the handful of near-coin-flip games (favorite under ~52%) raises
+   P(first) substantially, and it is never worse than always-favorite in any row. The expected
+   cost of a 48% dog is 0.04 points; the differentiation value against a correlated field is
+   far larger than that.
+2. **The value collapses as the field's own deviation rate rises.** By DEV 0.30 the policies
+   are indistinguishable. Heavy dog-picking (favorite under 58%) is worse than always-favorite
+   everywhere. Section 3's "random dog" result stands: skill-free contrarianism in 60/40 games
+   still loses. The mispricing hunt was aimed at the wrong games; the game-theory value is in
+   the 50/50s, where mispricing is irrelevant.
+3. **The decision variable is the family's actual deviation rate in close games**, which
+   nobody has measured. That makes `pool_picks.csv` the most valuable dataset in this project.
+4. **Caveat that cuts against the dog rows.** The simulation lets others deviate uniformly
+   across close games. Real people deviate in the *same* coin-flip games (they are the games
+   everyone perceives as toss-ups), and Bears/Packers fandom concentrates further. Correlated
+   deviation in the same games shrinks the differentiation value. ChatGPT's simulation should
+   model that explicitly; mine does not.
+
+Revised operating rule for 2026, replacing "favorite every game": **favorite in every game
+where the no-vig favorite is 52% or higher; in games under 52%, take the dog unless the logged
+family picks show the family already splits those games.** Week 1 candidates by that rule:
+BUF@HOU (favorite 51.7%), GB@MIN (52.2%, borderline), NYJ@TEN (52.6%, no).

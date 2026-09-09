@@ -16,6 +16,8 @@ Policies for the user:
   skilled_dog  take the dog in close games when a noisy signal says so
   late_var     favorite through week 13; from week 14, take dogs in close games when trailing
                the leader by more than the remaining-games threshold
+  dog_below    take the dog whenever the favorite is below --user-thresh (near coin flips only)
+Run with --crossover to print P(first) for dog_below thresholds against a sweep of others' DEV.
 """
 import argparse, csv, io, random, urllib.request
 
@@ -54,6 +56,8 @@ def season(pf, policy, members, dev, close, edge, gap_per_game, rng):
                 signal_fav = fav_wins if rng.random() < edge else (rng.random() < p)
                 pick_fav = signal_fav
             else: pick_fav = True
+        elif policy == "dog_below":
+            pick_fav = p >= edge          # edge reused as the threshold for this policy
         elif policy == "late_var":
             leader = max(s[1:]); behind = leader - s[0]
             pick_fav = not (week >= 14 and is_close and behind > gap_per_game * remaining)
@@ -66,9 +70,19 @@ def main():
     ap.add_argument("--games-file"); ap.add_argument("--members", type=int, default=6)
     ap.add_argument("--seasons", type=int, default=20000); ap.add_argument("--close", type=float, default=0.62)
     ap.add_argument("--gap-per-game", type=float, default=0.05, help="late_var trigger: deficit > this x games left")
+    ap.add_argument("--crossover", action="store_true")
     a = ap.parse_args()
     pf = load_pf(a.games_file); rng = random.Random(7)
     base = 1 / a.members
+    if a.crossover:
+        ths = [(0.0, "never"), (0.505, "<50.5%"), (0.52, "<52%"), (0.55, "<55%"), (0.58, "<58%")]
+        print("avg dog picks/season by threshold:",
+              {l: round(sum(p < t for p in pf) / len(pf) * 272, 1) for t, l in ths if t})
+        print(f"\n{'others dev':>10} | " + " | ".join(f"{l:>8}" for _, l in ths))
+        for dev in (0.0, 0.01, 0.02, 0.05, 0.10, 0.15, 0.30):
+            row = [sum(season(pf, "dog_below", a.members, dev, a.close, t, 0, rng) for _ in range(a.seasons)) / a.seasons for t, _ in ths]
+            print(f"{dev:10.2f} | " + " | ".join(f"{v:8.3f}" for v in row))
+        return
     print(f"baseline P(first) = {base:.3f}; {a.members} members; {a.seasons} seasons each cell\n")
     print(f"{'user policy':14} {'others dev':>10} {'edge':>5}  P(first)")
     for dev in (0.15, 0.30, 0.50):
