@@ -27,7 +27,7 @@ def main():
     rows = list(csv.DictReader(open(a.games_file, newline=""))) if a.games_file else \
            list(csv.DictReader(io.StringIO(urllib.request.urlopen(URL).read().decode())))
     n = fav_ok = 0; brier = ll = 0.0
-    cal = defaultdict(lambda: [0, 0]); per_season = defaultdict(lambda: [0, 0])
+    cal = defaultdict(lambda: [0, 0, 0.0]); per_season = defaultdict(lambda: [0, 0])
     for r in rows:
         if r["game_type"] != "REG" or r["result"] in ("", "0"): continue
         if not (r["away_moneyline"] and r["home_moneyline"] and r["spread_line"]): continue
@@ -39,12 +39,13 @@ def main():
         n += 1; fav_ok += (pick_home == home_win)
         per_season[s][0] += 1; per_season[s][1] += (pick_home == home_win)
         pfav = max(pa, ph); fav_won = (ph >= pa) == home_win
-        b = int(pfav * 100 // 5 * 5); cal[b][0] += 1; cal[b][1] += fav_won
+        b = min(int(pfav * 100 // 5 * 5), 90); cal[b][0] += 1; cal[b][1] += fav_won; cal[b][2] += pfav
         brier += (ph - home_win) ** 2; ll -= math.log(ph if home_win else pa)
     print(f"games {n}  spread-favorite SU accuracy {fav_ok/n:.4f}  Brier {brier/n:.4f}  logloss {ll/n:.4f}")
-    print("season-accuracy SE at 67% over 272 games: %.3f" % math.sqrt(.67 * .33 / 272))
-    print("\nbucket  n     actual_fav_win_rate")
-    for b in sorted(cal): print(f"{b:>3}-{b+5:<3} {cal[b][0]:5d}  {cal[b][1]/cal[b][0]:.3f}")
+    print("season-accuracy SE at 67%% over 272 games: %.3f" % math.sqrt(.67 * .33 / 272))
+    print("\nbucket    n   mean_pred  actual  cal_error  (90+ bucket is 90-100)")
+    for b in sorted(cal):
+        n_, w_, sp_ = cal[b]; print(f"{b:>3}-{b+5 if b<90 else 100:<3} {n_:5d}  {sp_/n_:8.3f}  {w_/n_:6.3f}  {w_/n_-sp_/n_:+8.3f}")
     print("\nseason  n   fav_acc")
     for s in sorted(per_season): print(f"{s}  {per_season[s][0]:3d}  {per_season[s][1]/per_season[s][0]:.3f}")
 

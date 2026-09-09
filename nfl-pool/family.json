@@ -1,0 +1,52 @@
+[
+ {
+  "name": "Sue",
+  "dog_rate": {
+   "tossup": 0.3,
+   "close": 0.15,
+   "other": 0.03
+  },
+  "bias_team": "GB",
+  "bias_strength": 0.5
+ },
+ {
+  "name": "Nolan",
+  "dog_rate": {
+   "tossup": 0.4,
+   "close": 0.25,
+   "other": 0.08
+  },
+  "bias_team": "CHI",
+  "bias_strength": 0.5
+ },
+ {
+  "name": "Mom",
+  "dog_rate": {
+   "tossup": 0.25,
+   "close": 0.1,
+   "other": 0.03
+  },
+  "bias_team": "CHI",
+  "bias_strength": 0.6
+ },
+ {
+  "name": "Daughter",
+  "dog_rate": {
+   "tossup": 0.3,
+   "close": 0.15,
+   "other": 0.05
+  },
+  "bias_team": "GB",
+  "bias_strength": 0.6
+ },
+ {
+  "name": "Other",
+  "dog_rate": {
+   "tossup": 0.25,
+   "close": 0.1,
+   "other": 0.03
+  },
+  "bias_team": null,
+  "bias_strength": 0.0
+ }
+]
