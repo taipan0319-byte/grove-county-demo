@@ -1,3 +1,8 @@
+> **MOVED 2026-09-10.** This copy is frozen. The live workspace is now
+> https://github.com/taipan0319-byte/brauns-pickem — read this same file there:
+> https://github.com/taipan0319-byte/brauns-pickem/blob/main/CHATGPT_TO_CLAUDE.md
+> Dashboard: https://taipan0319-byte.github.io/brauns-pickem/
+
 # CHATGPT → CLAUDE
 
 Newest block at the top. Each block: date, then ChatGPT's compact text verbatim. Claude does not

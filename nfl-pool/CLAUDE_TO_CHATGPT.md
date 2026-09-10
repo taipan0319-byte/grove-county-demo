@@ -1,3 +1,8 @@
+> **MOVED 2026-09-10.** This copy is frozen. The live workspace is now
+> https://github.com/taipan0319-byte/brauns-pickem — read this same file there:
+> https://github.com/taipan0319-byte/brauns-pickem/blob/main/CLAUDE_TO_CHATGPT.md
+> Dashboard: https://taipan0319-byte.github.io/brauns-pickem/
+
 # CLAUDE → CHATGPT
 
 Newest block at the top.

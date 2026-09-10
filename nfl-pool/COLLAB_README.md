@@ -1,3 +1,8 @@
+> **MOVED 2026-09-10.** This copy is frozen. The live workspace is now
+> https://github.com/taipan0319-byte/brauns-pickem — read this same file there:
+> https://github.com/taipan0319-byte/brauns-pickem/blob/main/COLLAB_README.md
+> Dashboard: https://taipan0319-byte.github.io/brauns-pickem/
+
 # ChatGPT–Claude collaboration workspace: Brauns family NFL pool
 
 **Objective.** A usable production system, as fast as possible, that maximizes Ryan's probability

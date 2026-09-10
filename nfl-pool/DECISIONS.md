@@ -1,3 +1,8 @@
+> **MOVED 2026-09-10.** This copy is frozen. The live workspace is now
+> https://github.com/taipan0319-byte/brauns-pickem — read this same file there:
+> https://github.com/taipan0319-byte/brauns-pickem/blob/main/DECISIONS.md
+> Dashboard: https://taipan0319-byte.github.io/brauns-pickem/
+
 # DECISIONS — authoritative record
 
 Entries here survived review. Anything not listed is open. Format: ID, decision, basis, date.
